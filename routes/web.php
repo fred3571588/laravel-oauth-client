@@ -28,10 +28,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/redirect', function (Request $request) {
     $request->session()->put('state', $state = Str::random(40));
     $query = http_build_query([
-        'client_id' => '9',
+        'client_id' => '10',
         'redirect_uri' => 'http://192.168.1.182/project/laravel-client/public/callback',
         'response_type' => 'code',
-        'scope' => 'get-email',
+        'scope' => 'create-posts',
         'state' => $state,
     ]);
     return redirect('http://192.168.1.182/project/laravel-server/public/oauth/authorize?'.$query);
@@ -41,8 +41,8 @@ Route::get('/callback', function (Request $request) {
     $state = $request->session()->pull('state');
     $response = Http::asForm()->post('http://192.168.1.182/project/laravel-server/public/oauth/token', [
         'grant_type' => 'authorization_code',
-        'client_id' => '9',
-        'client_secret' => '4J4PtimSsPdk8qcdUW7ZIUscAn1xrqqi6f8XOmS0',
+        'client_id' => '10',
+        'client_secret' => 'VIgz9QS6YidmaGiNmm9Oho3WSWzQJ8QtuyoK13aD',
         'redirect_uri' => 'http://192.168.1.182/project/laravel-client/public/callback',
         'code' => $request->code,
     ]);
@@ -57,6 +57,19 @@ Route::get('/refresh_token', function (Request $request) {
         'client_id' => '8',
         'client_secret' => 'AGKtAormheckwXeagqotOaHATOmgJcXmRMVkUlzw',
         'scope' => '',
+    ]);
+
+    return $response->json();
+});
+
+Route::get('/password/access',function(Request $request){
+    $response = Http::asForm()->post('http://192.168.1.182/project/laravel-server/public/oauth/token', [
+        'grant_type' => 'password',
+        'client_id' => '11',
+        'client_secret' => 'UQArom3Q44SLbZF603esKeewgA5lvxU7D3czcMG8',
+        'username' => '123@gmail.com',
+        'password' => '123456789',
+        'scope' => '*',
     ]);
 
     return $response->json();
